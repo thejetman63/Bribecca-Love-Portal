@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bribecca Love Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            padding: 0;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 0, 0, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(220, 20, 60, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 20%, rgba(255, 69, 0, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% { 
+                transform: scale(1.1) rotate(5deg);
+                opacity: 0.8;
+            }
+        }
+
+        /* Hexagonal grid overlay */
+        .hex-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(30deg, rgba(100, 0, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(100, 0, 255, 0.02) 87.5%, rgba(100, 0, 255, 0.02)),
+                linear-gradient(150deg, rgba(100, 0, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(100, 0, 255, 0.02) 87.5%, rgba(100, 0, 255, 0.02)),
+                linear-gradient(30deg, rgba(100, 0, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(100, 0, 255, 0.02) 87.5%, rgba(100, 0, 255, 0.02)),
+                linear-gradient(150deg, rgba(100, 0, 255, 0.02) 12%, transparent 12.5%, transparent 87%, rgba(100, 0, 255, 0.02) 87.5%, rgba(100, 0, 255, 0.02));
+            background-size: 80px 140px;
+            background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+            animation: hexMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes hexMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(140px); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.4), transparent);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(220, 20, 60, 0.3), transparent);
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 7s;
+        }
+
+        .orb3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255, 69, 0, 0.3), transparent);
+            top: 50%;
+            left: 50%;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7c3aed 0%, #00bfff 50%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-transform: none;
+            animation: shimmer 3s ease-in-out infinite;
+            background-size: 200% 200%;
+            font-family: 'Georgia', serif;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '💑';
+            position: absolute;
+            left: -60px;
+            top: -10px;
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo::after {
+            content: '💕';
+            position: absolute;
+            right: -60px;
+            top: -10px;
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+            animation-delay: 1.5s;
+        }
+
+        .love-figures {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 4rem;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .figure-left {
+            animation: sway 2s ease-in-out infinite;
+        }
+
+        .figure-right {
+            animation: sway 2s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        .heart-center {
+            font-size: 3rem;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(5px) rotate(5deg); }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 0;
+            margin-bottom: 50px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 6px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeIn 1.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 20px 40px;
+            border: none;
+            background: transparent;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: rgba(255, 255, 255, 0.4);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #7c3aed, #00bfff);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: -1;
+        }
+
+        .mode-btn:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .mode-btn.active {
+            color: #ffffff;
+            transform: scale(1.02);
+        }
+
+        .mode-btn.active::before {
+            opacity: 1;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.5);
+        }
+
+        .main-interface {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 50px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 1.4s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-area {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .input-area textarea {
+            width: 100%;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            font-size: 1.1rem;
+            resize: none;
+            min-height: 180px;
+            transition: all 0.4s;
+            color: #ffffff;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .input-area textarea:focus {
+            outline: none;
+            border-color: rgba(124, 58, 237, 0.5);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1),
+                        0 20px 40px rgba(124, 58, 237, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .input-area textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 300;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 24px;
+            background: linear-gradient(135deg, #7c3aed 0%, #00bfff 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.6);
+        }
+
+        .action-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .action-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .action-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Output Section */
+        .output-area {
+            margin-top: 35px;
+            display: none;
+            animation: slideInUp 0.6s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .output-area.visible {
+            display: block;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .output-label {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .copy-button {
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #ffffff;
+            transition: all 0.3s;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .copy-button:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+        }
+
+        .copy-button.copied {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+
+        .output-content {
+            padding: 28px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            min-height: 140px;
+            font-size: 1.1rem;
+            color: #ffffff;
+            word-wrap: break-word;
+            line-height: 1.9;
+            font-weight: 300;
+        }
+
+        /* Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .loading-container {
+            text-align: center;
+        }
+
+        /* DNA Helix Loader */
+        .dna-loader {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+
+        .dna-strand {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #7c3aed, #00bfff);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.8);
+        }
+
+        .dna-strand:nth-child(1) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0s; }
+        .dna-strand:nth-child(2) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.1s; }
+        .dna-strand:nth-child(3) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.2s; }
+        .dna-strand:nth-child(4) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.3s; }
+        .dna-strand:nth-child(5) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.4s; }
+        .dna-strand:nth-child(6) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.5s; }
+        .dna-strand:nth-child(7) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.6s; }
+        .dna-strand:nth-child(8) { animation: dnaRotate 2s ease-in-out infinite; animation-delay: 0.7s; }
+
+        @keyframes dnaRotate {
+            0%, 100% {
+                transform: translate(75px, 0px) rotate(0deg);
+            }
+            25% {
+                transform: translate(110px, 40px) rotate(90deg);
+            }
+            50% {
+                transform: translate(75px, 80px) rotate(180deg);
+            }
+            75% {
+                transform: translate(40px, 40px) rotate(270deg);
+            }
+        }
+
+        .loading-message {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7c3aed, #00bfff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        .loading-status {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="gradient-bg"></div>
+    <div class="hex-grid"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+    
+    <!-- Loading Screen -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-container">
+            <div class="dna-loader">
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+                <div class="dna-strand"></div>
+            </div>
+            <div class="loading-message" id="loadingMessage">PROCESSING</div>
+            <div class="loading-status">QUANTUM ENCRYPTION ACTIVE</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="love-figures">
+                <span class="figure-left">👫</span>
+                <span class="heart-center">💗</span>
+                <span class="figure-right">🫂</span>
+            </div>
+            <div class="logo">Bribecca Love Portal</div>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" id="encodeBtn" onclick="switchMode('encode')">
+                Encode
+            </button>
+            <button class="mode-btn" id="decodeBtn" onclick="switchMode('decode')">
+                Decode
+            </button>
+        </div>
+
+        <div class="main-interface">
+            <div class="input-area">
+                <textarea id="inputText" placeholder="Enter message..."></textarea>
+            </div>
+
+            <button class="action-btn" onclick="processMessage()">
+                <span id="actionText">PROCESS</span>
+            </button>
+
+            <div class="output-area" id="outputArea">
+                <div class="output-header">
+                    <span class="output-label" id="outputLabel">RESULT</span>
+                    <button class="copy-button" id="copyBtn" onclick="copyOutput()">COPY</button>
+                </div>
+                <div class="output-content" id="outputContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'encode';
+
+        const sentenceTemplates = [
+            "Thanks for {0} earlier, it really {1}!",
+            "I was thinking about {0} and {1}.",
+            "The {0} looks perfect for {1}.",
+            "Did you hear about {0}? It's quite {1}.",
+            "I really enjoyed {0}, especially {1}.",
+            "Looking forward to {0} later, should be {1}!",
+            "Can't believe {0} already, time {1}.",
+            "The meeting about {0} went well, very {1}.",
+            "Just finished {0}, feeling {1} about it.",
+            "Remember {0}? That was truly {1}.",
+            "Planning to {0} soon, hopefully {1}.",
+            "Great news about {0}, everything is {1}!",
+            "Thinking of {0} tomorrow, should be {1}.",
+            "The presentation on {0} was really {1}.",
+            "Just saw {0}, looks absolutely {1}!",
+            "Working on {0} today, going {1}.",
+            "The update about {0} sounds {1}.",
+            "Finally completed {0}, feels {1}!",
+            "Heard from {0} yesterday, they're {1}.",
+            "The plan for {0} seems {1}."
+        ];
+
+        const fillerWords1 = [
+            "the coffee", "the meeting", "lunch", "the presentation", 
+            "the project", "our chat", "the email", "the weather",
+            "the update", "the report", "the schedule", "dinner",
+            "the movie", "the game", "the event", "your message",
+            "the call", "the party", "the trip", "breakfast"
+        ];
+
+        const fillerWords2 = [
+            "made my day", "was great", "worked out well", "interesting",
+            "flies by", "productive", "going smoothly", "wonderful",
+            "exciting", "impressive", "helpful", "perfect timing",
+            "quite nice", "really good", "excellent", "fantastic",
+            "very helpful", "super convenient", "amazing", "brilliant"
+        ];
+
+        const encodingLookup = new Map();
+
+        function stringToHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
+
+        function showLoading(isEncode) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            loadingMessage.textContent = isEncode ? 'ENCODING' : 'DECODING';
+            loadingOverlay.classList.add('active');
+            
+            return new Promise(resolve => {
+                const duration = 2000 + Math.random() * 1000;
+                setTimeout(() => {
+                    loadingOverlay.classList.remove('active');
+                    resolve();
+                }, duration);
+            });
+        }
+
+        function encodeSentence(text) {
+            if (!text.trim()) return '';
+
+            const original = text.trim();
+            const hash = stringToHash(original);
+            
+            const templateIndex = hash % sentenceTemplates.length;
+            const filler1Index = (hash * 7) % fillerWords1.length;
+            const filler2Index = (hash * 13) % fillerWords2.length;
+            
+            const template = sentenceTemplates[templateIndex];
+            const encodedSentence = template
+                .replace('{0}', fillerWords1[filler1Index])
+                .replace('{1}', fillerWords2[filler2Index]);
+            
+            encodingLookup.set(encodedSentence, original);
+            
+            return encodedSentence + '\u200B';
+        }
+
+        function decodeSentence(text) {
+            if (!text.trim()) return '';
+
+            const cleanText = text.replace(/\u200B/g, '');
+            
+            if (encodingLookup.has(cleanText)) {
+                return encodingLookup.get(cleanText);
+            }
+            
+            for (let [encoded, original] of encodingLookup.entries()) {
+                if (cleanText.includes(encoded) || encoded.includes(cleanText)) {
+                    return original;
+                }
+            }
+            
+            return 'MESSAGE NOT FOUND IN DATABASE';
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const encodeBtn = document.getElementById('encodeBtn');
+            const decodeBtn = document.getElementById('decodeBtn');
+            const inputText = document.getElementById('inputText');
+            const outputArea = document.getElementById('outputArea');
+
+            if (mode === 'encode') {
+                encodeBtn.classList.add('active');
+                decodeBtn.classList.remove('active');
+                inputText.placeholder = 'Enter message...';
+            } else {
+                decodeBtn.classList.add('active');
+                encodeBtn.classList.remove('active');
+                inputText.placeholder = 'Paste encoded text...';
+            }
+
+            inputText.value = '';
+            outputArea.classList.remove('visible');
+        }
+
+        async function processMessage() {
+            const inputText = document.getElementById('inputText').value;
+            const outputArea = document.getElementById('outputArea');
+            const outputContent = document.getElementById('outputContent');
+
+            if (!inputText.trim()) {
+                return;
+            }
+
+            await showLoading(currentMode === 'encode');
+
+            let result;
+            if (currentMode === 'encode') {
+                result = encodeSentence(inputText);
+            } else {
+                result = decodeSentence(inputText);
+            }
+
+            outputContent.textContent = result;
+            outputArea.classList.add('visible');
+        }
+
+        function copyOutput() {
+            const outputContent = document.getElementById('outputContent').textContent;
+            const copyBtn = document.getElementById('copyBtn');
+
+            navigator.clipboard.writeText(outputContent).then(() => {
+                copyBtn.textContent = 'COPIED';
+                copyBtn.classList.add('copied');
+
+                setTimeout(() => {
+                    copyBtn.textContent = 'COPY';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
