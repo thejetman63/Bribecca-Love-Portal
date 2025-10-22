@@ -692,44 +692,86 @@
 
             const original = text.trim();
             
-            // Create a simple cipher: Base64 encode
-            const encoded = btoa(unescape(encodeURIComponent(original)));
+            // Convert message to binary
+            let binary = '';
+            for (let i = 0; i < original.length; i++) {
+                const bin = original.charCodeAt(i).toString(2).padStart(8, '0');
+                binary += bin;
+            }
             
             // Use hash to pick a consistent template
-            const hash = stringToHash(encoded);
+            const hash = stringToHash(original);
             const templateIndex = hash % sentenceTemplates.length;
             const filler1Index = (hash * 7) % fillerWords1.length;
             const filler2Index = (hash * 13) % fillerWords2.length;
             
             const template = sentenceTemplates[templateIndex];
-            const coverText = template
+            let coverText = template
                 .replace('{0}', fillerWords1[filler1Index])
                 .replace('{1}', fillerWords2[filler2Index]);
             
-            // Append the encoded message visibly but disguised as a code
-            return coverText + ' [' + encoded + ']';
+            // Encode binary into spacing using zero-width spaces and zero-width non-joiners
+            let encoded = '';
+            for (let i = 0; i < coverText.length && i < binary.length; i++) {
+                encoded += coverText[i];
+                // Add invisible character based on binary
+                if (binary[i] === '1') {
+                    encoded += '\u200B'; // Zero-width space for 1
+                } else {
+                    encoded += '\u200C'; // Zero-width non-joiner for 0
+                }
+            }
+            // Add remaining text
+            encoded += coverText.substring(binary.length);
+            
+            // Add length marker at the start (invisible)
+            const lengthMarker = '\u200D'.repeat(original.length);
+            
+            return lengthMarker + encoded;
         }
 
         function decodeSentence(text) {
             if (!text.trim()) return '';
 
             try {
-                // Look for encoded message in brackets
-                const match = text.match(/\[([^\]]+)\]/);
-                
-                if (!match) {
-                    return 'ERROR: No encoded message found. Make sure to copy the entire text including the part in brackets [ ].';
+                // Count length markers at the start
+                let messageLength = 0;
+                let startIndex = 0;
+                while (text[startIndex] === '\u200D') {
+                    messageLength++;
+                    startIndex++;
                 }
                 
-                const encoded = match[1];
+                if (messageLength === 0) {
+                    return 'ERROR: This does not appear to be an encoded message. Make sure to copy the entire text.';
+                }
                 
-                // Decode from base64
-                const decoded = decodeURIComponent(escape(atob(encoded)));
+                // Extract binary from zero-width characters
+                let binary = '';
+                for (let i = startIndex; i < text.length && binary.length < messageLength * 8; i++) {
+                    const char = text[i];
+                    if (char === '\u200B') {
+                        binary += '1';
+                    } else if (char === '\u200C') {
+                        binary += '0';
+                    }
+                }
+                
+                if (binary.length < messageLength * 8) {
+                    return 'ERROR: Message data incomplete. Make sure to copy the entire text.';
+                }
+                
+                // Convert binary back to text
+                let decoded = '';
+                for (let i = 0; i < binary.length; i += 8) {
+                    const byte = binary.substr(i, 8);
+                    decoded += String.fromCharCode(parseInt(byte, 2));
+                }
                 
                 return decoded;
                 
             } catch (e) {
-                return 'ERROR: Failed to decode message. Make sure you copied the complete text including the code in brackets.';
+                return 'ERROR: Failed to decode. Make sure you copied the complete message text.';
             }
         }
 
