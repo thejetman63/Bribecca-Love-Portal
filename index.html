@@ -661,8 +661,6 @@
             "very helpful", "super convenient", "amazing", "brilliant"
         ];
 
-        const encodingLookup = new Map();
-
         function stringToHash(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -689,42 +687,88 @@
             });
         }
 
+        // Encode text to base64 and hide in zero-width characters
+        function hideInZeroWidth(text) {
+            const encoded = btoa(unescape(encodeURIComponent(text)));
+            let hidden = '';
+            for (let i = 0; i < encoded.length; i++) {
+                const char = encoded[i];
+                const code = char.charCodeAt(0);
+                // Use zero-width characters to encode each character
+                hidden += String.fromCharCode(0x200B + (code % 10));
+            }
+            return hidden;
+        }
+
+        // Extract text from zero-width characters
+        function extractFromZeroWidth(text) {
+            let encoded = '';
+            let zeroWidthChars = '';
+            
+            // Extract all zero-width characters
+            for (let i = 0; i < text.length; i++) {
+                const code = text.charCodeAt(i);
+                if (code >= 0x200B && code <= 0x200F) {
+                    zeroWidthChars += text[i];
+                }
+            }
+            
+            if (zeroWidthChars.length === 0) return null;
+            
+            // This is a simplified approach - we'll use a different method
+            // Store the actual message in a more recoverable way
+            return null;
+        }
+
         function encodeSentence(text) {
             if (!text.trim()) return '';
 
             const original = text.trim();
-            const hash = stringToHash(original);
             
+            // Create a simple cipher: Base64 encode then hide in sentence
+            const encoded = btoa(unescape(encodeURIComponent(original)));
+            
+            // Use hash to pick a consistent template
+            const hash = stringToHash(encoded);
             const templateIndex = hash % sentenceTemplates.length;
             const filler1Index = (hash * 7) % fillerWords1.length;
             const filler2Index = (hash * 13) % fillerWords2.length;
             
             const template = sentenceTemplates[templateIndex];
-            const encodedSentence = template
+            const coverText = template
                 .replace('{0}', fillerWords1[filler1Index])
                 .replace('{1}', fillerWords2[filler2Index]);
             
-            encodingLookup.set(encodedSentence, original);
-            
-            return encodedSentence + '\u200B';
+            // Append the encoded message with a special marker
+            return coverText + '⁣' + encoded + '⁣';
         }
 
         function decodeSentence(text) {
             if (!text.trim()) return '';
 
-            const cleanText = text.replace(/\u200B/g, '');
-            
-            if (encodingLookup.has(cleanText)) {
-                return encodingLookup.get(cleanText);
-            }
-            
-            for (let [encoded, original] of encodingLookup.entries()) {
-                if (cleanText.includes(encoded) || encoded.includes(cleanText)) {
-                    return original;
+            try {
+                // Look for our special markers
+                const parts = text.split('⁣');
+                
+                if (parts.length < 2) {
+                    return 'ERROR: This does not appear to be an encoded message from this app.';
                 }
+                
+                // The encoded message is between the markers
+                const encoded = parts[1];
+                
+                if (!encoded) {
+                    return 'ERROR: Could not find encoded data in message.';
+                }
+                
+                // Decode from base64
+                const decoded = decodeURIComponent(escape(atob(encoded)));
+                
+                return decoded;
+                
+            } catch (e) {
+                return 'ERROR: Failed to decode message. Make sure you copied the entire text including any invisible characters.';
             }
-            
-            return 'MESSAGE NOT FOUND IN DATABASE';
         }
 
         function switchMode(mode) {
